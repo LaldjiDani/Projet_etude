@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-8">
+
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Espace Livreur 🛵</h1>
+            <p class="text-gray-500">Matricule : <span class="font-bold">{{ session.get('user') }}</span></p>
+        </div>
+        <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-bold border border-blue-200">
+            📍 Ma zone : {{ ville }}
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-brand-600 mb-4 flex items-center gap-2">
+        🚀 Mes livraisons en cours
+    </h2>
+    
+    {% if encours %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        {% for mission in encours %}
+        <div class="bg-white border-l-4 border-brand-500 rounded shadow p-6 relative">
+            <span class="absolute top-2 right-2 bg-brand-100 text-brand-800 text-xs font-bold px-2 py-1 rounded">EN COURS</span>
+            
+            <h3 class="font-bold text-lg mb-2">Commande #{{ mission.idcommande }}</h3>
+            
+            <div class="space-y-2 text-sm text-gray-600 mb-6">
+                <p><strong>Resto :</strong> {{ mission.nomresto }} <br> 🏠 {{ mission.adresse_rue }}</p>
+                <hr>
+                <p><strong>Client :</strong> {{ mission.prenomcl }} ({{ mission.numtelcl }})</p>
+                <p><strong>Adresse :</strong> 📍 {{ mission.rue_client }}</p>
+            </div>
+
+            <a href="{{ url_for('terminer_commande', id_cmd=mission.idcommande) }}" 
+               onclick="return confirm('Confirmer la livraison ?')"
+               class="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-bold py-3 rounded transition">
+                ✅ Valider la livraison
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500 italic mb-10 border-l-4 border-gray-300 pl-4 py-2 bg-gray-50">Aucune livraison en cours. Au travail !</p>
+    {% endif %}
+
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Commandes disponibles à {{ ville }}</h2>
+    
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="py-3 px-4 text-left">Heure</th>
+                    <th class="py-3 px-4 text-left">Restaurant</th>
+                    <th class="py-3 px-4 text-left">Adresse Resto</th>
+                    <th class="py-3 px-4 text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for cmd in dispo %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="py-3 px-4">{{ cmd.heurecommande }}</td>
+                    <td class="py-3 px-4 font-bold">{{ cmd.nomresto }}</td>
+                    <td class="py-3 px-4 text-sm text-gray-500">{{ cmd.adresse_rue }}</td>
+                    <td class="py-3 px-4 text-center">
+                        <a href="{{ url_for('prendre_commande', id_cmd=cmd.idcommande) }}" 
+                           class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded shadow transition">
+                            Prendre en charge
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="py-8 text-center text-gray-500">
+                        Aucune commande en attente dans votre zone pour le moment. 😴
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-8">
+    
+    <div class="bg-white p-6 rounded-lg shadow mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Bonjour, {{ session.get('prenom') }} 👋</h1>
+            <p class="text-gray-500">{{ session.get('user') }}</p>
+        </div>
+        <div class="text-center bg-orange-50 p-4 rounded-xl border border-orange-100">
+            <span class="block text-3xl font-bold text-brand-600">{{ session.get('fidelite') }}</span>
+            <span class="text-xs text-gray-600 uppercase font-bold tracking-wide">Points Fidélité</span>
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Mes dernières commandes</h2>
+    
+    {% if commandes %}
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="text-left py-3 px-6 text-xs font-bold text-gray-600 uppercase">Restaurant</th>
+                    <th class="text-left py-3 px-6 text-xs font-bold text-gray-600 uppercase">Heure</th>
+                    <th class="text-left py-3 px-6 text-xs font-bold text-gray-600 uppercase">Total</th>
+                    <th class="text-center py-3 px-6 text-xs font-bold text-gray-600 uppercase">Statut</th>
+                    <th class="text-center py-3 px-6 text-xs font-bold text-gray-600 uppercase">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for cmd in commandes %}
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-6 font-medium text-gray-900">{{ cmd.nomresto }}</td>
+                    <td class="py-4 px-6 text-gray-500">{{ cmd.heurecommande }}</td>
+                    <td class="py-4 px-6 font-bold text-brand-600">{{ cmd.total_prix }} €</td>
+                    <td class="py-4 px-6 text-center">
+                        {% if cmd.statut == 'livree' %}
+                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full">Livrée</span>
+                        {% elif cmd.statut == 'en_attente' %}
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full">En attente</span>
+                        {% elif cmd.statut == 'en_livraison' %}
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full">En cours</span>
+                        {% elif cmd.statut == 'annulee' %}
+                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded-full">Annulée</span>
+                        {% else %}
+                            <span class="bg-gray-100 text-gray-800 text-xs font-bold px-2 py-1 rounded-full">{{ cmd.statut }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 px-6 text-center">
+                        {% if cmd.statut == 'livree' %}
+                            <button class="text-xs border border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white px-3 py-1 rounded transition">
+                                Noter
+                            </button>
+                        
+                        {% elif cmd.statut == 'en_attente' %}
+                            <form action="{{ url_for('annuler_commande', id_cmd=cmd.idcommande) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment annuler ?');">
+                                <button type="submit" class="text-xs border border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-3 py-1 rounded transition">
+                                    Annuler
+                                </button>
+                            </form>
+                        
+                        {% else %}
+                            <span class="text-gray-400 text-xs">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+        <p class="mb-4">Vous n'avez pas encore passé de commande.</p>
+        <a href="{{ url_for('index') }}" class="bg-brand-600 text-white font-bold py-2 px-6 rounded hover:bg-brand-700">
+            Commander maintenant
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

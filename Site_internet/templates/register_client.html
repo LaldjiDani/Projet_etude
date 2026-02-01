@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh]">
+    <div class="w-full max-w-md bg-white p-8 border border-gray-200 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Créer un compte</h2>
+
+        <form action="{{ url_for('action_register_client') }}" method="post" class="space-y-4">            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Prénom</label>
+                    <input type="text" name="prenom" required 
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
+                    <input type="text" name="nom" required 
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Adresse Email</label>
+                <input type="email" name="email" required placeholder="exemple@mail.com" 
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Téléphone</label>
+                <input type="tel" name="tel" placeholder="06..." maxlength="10" 
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            </div>
+
+            <div class="border-t border-b border-gray-100 py-2 space-y-3">
+                <p class="text-gray-500 text-sm font-bold">Votre Adresse</p>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Rue (Numéro et voie)</label>
+                    <input type="text" name="rue" required placeholder="Ex: 10 rue de la paix"
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Ville</label>
+                    <select name="id_ville" class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                        {% for v in villes %}
+                            <option value="{{ v[0] }}">{{ v[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Carte Bancaire</label>
+                <input type="text" name="cb" placeholder="16 chiffres" maxlength="16" 
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Mot de passe</label>
+                <input type="password" name="mdp" required 
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+            </div>
+
+            <button type="submit" class="w-full bg-brand-600 text-white font-bold py-3 rounded hover:bg-brand-700 transition duration-200">
+                S'inscrire
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-gray-600">
+            Déjà inscrit ? <a href="{{ url_for('page_login_client') }}" class="text-brand-600 hover:underline">Se connecter</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10">
+    
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-lg">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Transparence & Nutrition</h1>
+        <p class="text-lg text-gray-700">
+            Suite aux interrogations soulevées par l'association <em>"Manger Mieux"</em>, 
+            <strong>Enjoy!</strong> joue la carte de la transparence totale.
+            Nous publions ci-dessous les données brutes de consommation sur notre plateforme.
+        </p>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
+        <div class="p-6 bg-gray-800 text-white flex justify-between items-center">
+            <h2 class="text-xl font-bold">Rapport de Popularité des Spécialités</h2>
+            <span class="text-sm bg-gray-700 px-3 py-1 rounded-full">Données certifiées</span>
+        </div>
+
+        <div class="p-6">
+            {% if stats %}
+                {% set max_val = stats[0].total_commandes %}
+
+                <div class="space-y-4">
+                    {% for item in stats %}
+                    <div class="flex items-center gap-4">
+                        <div class="w-32 text-right font-semibold text-gray-700 capitalize">
+                            {{ item.specialite }}
+                        </div>
+                        
+                        <div class="flex-grow bg-gray-100 rounded-full h-6 overflow-hidden relative">
+                            {% set width = (item.total_commandes / max_val * 100) %}
+                            
+                            <div class="h-full rounded-full flex items-center px-3 text-xs text-white font-bold transition-all duration-1000 ease-out
+                                        {{ 'bg-green-500' if item.specialite in ['healthy', 'salade', 'vegan', 'vegetarien'] else 'bg-orange-500' }}"
+                                 style="width: {{ width }}%;">
+                                {{ item.total_commandes }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-8 text-center text-sm text-gray-500 italic">
+                    * Données calculées sur la base du volume total des commandes par catégorie de restaurant.
+                </div>
+
+            {% else %}
+                <p class="text-center text-gray-500">Pas assez de données pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

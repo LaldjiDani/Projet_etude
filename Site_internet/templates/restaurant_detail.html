@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto py-10">
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-10 border border-gray-100">
+        <div class="h-48 bg-gray-800 flex items-center justify-center relative pattern-bg">
+            <span class="text-6xl">🍽️</span>
+        </div>
+        
+        <div class="p-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                
+                <div>
+                    <h1 class="text-4xl font-extrabold text-gray-900 mb-2">{{ resto.nomresto }}</h1>
+                    <p class="text-gray-600 flex items-center gap-2 text-lg">
+                        📍 {{ resto.adresse_rue if resto.adresse_rue else 'Centre ville' }}, {{ resto.nomville }}
+                    </p>
+                </div>
+
+                {% if est_ouvert(resto.ouverture, resto.fermeture) %}
+                    <div class="flex flex-col items-end">
+                        <span class="bg-green-100 text-green-800 text-lg font-bold px-6 py-2 rounded-full border border-green-200 shadow-sm flex items-center gap-2 animate-pulse">
+                            <span class="w-3 h-3 bg-green-500 rounded-full"></span> OUVERT
+                        </span>
+                        <p class="text-sm text-gray-500 mt-1">Ferme à {{ resto.fermeture }}</p>
+                    </div>
+                {% else %}
+                    <div class="flex flex-col items-end">
+                        <span class="bg-red-100 text-red-800 text-lg font-bold px-6 py-2 rounded-full border border-red-200 shadow-sm flex items-center gap-2">
+                            <span class="w-3 h-3 bg-red-500 rounded-full"></span> FERMÉ
+                        </span>
+                        <p class="text-sm text-gray-500 mt-1">Ouvre à {{ resto.ouverture }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">La Carte du Restaurant</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for plat in plats %}
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition duration-300 flex justify-between items-center">
+            
+            <div>
+                <h3 class="text-xl font-bold text-gray-800">{{ plat.nomplat }}</h3>
+                <p class="text-gray-500 text-sm mb-2">{{ plat.description if plat.description else 'Délicieux plat préparé maison' }}</p>
+                <span class="text-xl font-bold text-brand-600">{{ plat.prix }} €</span>
+            </div>
+
+            <form action="{{ url_for('add_to_cart') }}" method="post">
+                <input type="hidden" name="nom_plat" value="{{ plat.nomplat }}">
+                <input type="hidden" name="prix" value="{{ plat.prix }}">
+                <input type="hidden" name="nom_resto" value="{{ resto.nomresto }}">
+                
+                {% if est_ouvert(resto.ouverture, resto.fermeture) %}
+                    <button type="submit" class="bg-gray-900 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-green-600 transition shadow-lg text-2xl font-bold">
+                        +
+                    </button>
+                {% else %}
+                    <button type="button" disabled class="bg-gray-300 text-gray-500 w-12 h-12 rounded-full flex items-center justify-center cursor-not-allowed text-2xl font-bold" title="Restaurant fermé">
+                        +
+                    </button>
+                {% endif %}
+            </form>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
